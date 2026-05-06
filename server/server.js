@@ -64,7 +64,6 @@ class GameRoom extends Room {
         this.setState(new GameState());
         this.maxClients = 100;
         
-        // Spawn 5 slimes
         for (let i = 0; i < 5; i++) {
             const mob = new Mob();
             mob.id = `mob_${i}`;
@@ -93,7 +92,6 @@ class GameRoom extends Room {
                         player.maxHp += 20;
                         player.hp = player.maxHp;
                     }
-                    // Respawn mob
                     mob.hp = mob.maxHp;
                     mob.x = Math.random() * 800;
                     mob.y = Math.random() * 600;
@@ -120,4 +118,27 @@ class GameRoom extends Room {
 
     onLeave(client) {
         this.state.players.delete(client.sessionId);
-        console.log(client.sessionId, "left!
+        console.log(client.sessionId, "left!");
+    }
+}
+
+// ===== ESTO ES LO QUE TE FALTA BRO =====
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// ESTA LÍNEA ES CRÍTICA - SIRVE TU JUEGO
+app.use(express.static(path.join(__dirname, '../public')));
+
+const server = createServer(app);
+const gameServer = new Server({
+    server: server
+});
+
+gameServer.define('game', GameRoom);
+
+// ESTA LÍNEA ES CRÍTICA - USA EL PUERTO DE RAILWAY
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+    console.log(`⚔️ Elegan V3 online en puerto ${port}`);
+});
